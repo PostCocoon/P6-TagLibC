@@ -6,7 +6,7 @@ use NativeCall;
 class TagLib::AudioProperties is export is repr<CPPStruct>  {
   has Pointer $.vtable;
 
-  enum ReadStyle is native(TagLib.lib) (
+  enum ReadStyle (
     "Fast" => 0,
     "Average" => 1,
     "Accurate" => 2
