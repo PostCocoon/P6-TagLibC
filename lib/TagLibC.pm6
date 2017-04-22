@@ -1,28 +1,35 @@
 use v6;
 use NativeCall;
+use LibraryCheck;
 
 unit module TagLibC;
 
+my $_lib;
+
 sub library is export {
-    # Environment variable overrides auto-detection
-    return %*ENV<PERL6_TAGLIB_C_LIB> if %*ENV<PERL6_TAGLIB_C_LIB>;
-
-    # On MacOS X using homebrew
-    return "libtag_c.dylib" if $*KERNEL.name eq 'darwin';
-
-    # Linux/UNIX
-    constant LIB = 'tag_c';
-    if library-exists(LIB, v0) {
-        return sprintf("lib%s.so.5", LIB);
-    } elsif library-exists(LIB, v1) {
-        return sprintf("lib%s.so.6", LIB);
-    }
-
-    # Fallback
-    return sprintf("lib%s.so", LIB);
+  return $_lib if $_lib;
+  return $_lib = library_search;
 }
 
-constant LIB = library;
+sub library_search is export {
+
+  # Environment variable overrides auto-detection
+  return %*ENV<PERL6_TAGLIB_C_LIB> if %*ENV<PERL6_TAGLIB_C_LIB>;
+
+  # On MacOS X using homebrew
+  return "libtag_c.dylib" if $*KERNEL.name eq 'darwin';
+
+  # Linux/UNIX
+  constant LIB = 'tag_c';
+  if library-exists(LIB, v0) {
+      return sprintf("lib%s.so.0", LIB);
+  } elsif library-exists(LIB, v1) {
+      return sprintf("lib%s.so.1", LIB);
+  }
+
+  # Fallback
+  return sprintf("lib%s.so", LIB);
+}
 
 ## Enumerations
 
@@ -96,7 +103,7 @@ constant TagLib_File is export := Tag;
 # */
 #TAGLIB_C_EXPORT void taglib_set_strings_unicode(BOOL unicode);
 sub taglib_set_strings_unicode(int32 $unicode # int
-                               ) is native(LIB)  is export { * }
+                               ) is native(&library)  is export { * }
 
 #-From /usr/include/taglib/tag_c.h:82
 #/*!
@@ -107,7 +114,7 @@ sub taglib_set_strings_unicode(int32 $unicode # int
 # */
 #TAGLIB_C_EXPORT void taglib_set_string_management_enabled(BOOL management);
 sub taglib_set_string_management_enabled(int32 $management # int
-                                         ) is native(LIB)  is export { * }
+                                         ) is native(&library)  is export { * }
 
 #-From /usr/include/taglib/tag_c.h:87
 #/*!
@@ -115,7 +122,7 @@ sub taglib_set_string_management_enabled(int32 $management # int
 # */
 #TAGLIB_C_EXPORT void taglib_free(void* pointer);
 sub taglib_free(Pointer $pointer # void*
-                ) is native(LIB)  is export { * }
+                ) is native(&library)  is export { * }
 
 #-From /usr/include/taglib/tag_c.h:113
 #/*!
@@ -127,7 +134,7 @@ sub taglib_free(Pointer $pointer # void*
 # */
 #TAGLIB_C_EXPORT TagLib_File *taglib_file_new(const char *filename);
 sub taglib_file_new(Str $filename # const char*
-                    ) is native(LIB) returns File is export { * }
+                    ) is native(&library) returns File is export { * }
 
 #-From /usr/include/taglib/tag_c.h:119
 #/*!
@@ -137,7 +144,7 @@ sub taglib_file_new(Str $filename # const char*
 #TAGLIB_C_EXPORT TagLib_File *taglib_file_new_type(const char *filename, TagLib_File_Type type);
 sub taglib_file_new_type(Str                           $filename # const char*
                         ,int32                         $type # Typedef<TagLib_File_Type>->|TagLib_File_Type|
-                         ) is native(LIB) returns File is export { * }
+                         ) is native(&library) returns File is export { * }
 
 #-From /usr/include/taglib/tag_c.h:124
 #/*!
@@ -145,12 +152,12 @@ sub taglib_file_new_type(Str                           $filename # const char*
 # */
 #TAGLIB_C_EXPORT void taglib_file_free(TagLib_File *file);
 sub taglib_file_free( File $file # Typedef<TagLib_File>->||*
-                     ) is native(LIB)  is export { * }
+                     ) is native(&library)  is export { * }
 
 #-From /usr/include/taglib/tag_c.h:131
 #TAGLIB_C_EXPORT BOOL taglib_file_is_valid(const TagLib_File *file);
 sub taglib_file_is_valid( File $file # const Typedef<TagLib_File>->||*
-                         ) is native(LIB) returns int32 is export { * }
+                         ) is native(&library) returns int32 is export { * }
 
 #-From /usr/include/taglib/tag_c.h:137
 #/*!
@@ -159,7 +166,7 @@ sub taglib_file_is_valid( File $file # const Typedef<TagLib_File>->||*
 # */
 #TAGLIB_C_EXPORT TagLib_Tag *taglib_file_tag(const TagLib_File *file);
 sub taglib_file_tag( File $file # const Typedef<TagLib_File>->||*
-                    ) is native(LIB) returns Tag is export { * }
+                    ) is native(&library) returns Tag is export { * }
 
 #-From /usr/include/taglib/tag_c.h:143
 #/*!
@@ -168,7 +175,7 @@ sub taglib_file_tag( File $file # const Typedef<TagLib_File>->||*
 # */
 #TAGLIB_C_EXPORT const TagLib_AudioProperties *taglib_file_audioproperties(const TagLib_File *file);
 sub taglib_file_audioproperties( File $file # const Typedef<TagLib_File>->||*
-                                ) is native(LIB) returns AudioProperties is export { * }
+                                ) is native(&library) returns AudioProperties is export { * }
 
 #-From /usr/include/taglib/tag_c.h:148
 #/*!
@@ -176,7 +183,7 @@ sub taglib_file_audioproperties( File $file # const Typedef<TagLib_File>->||*
 # */
 #TAGLIB_C_EXPORT BOOL taglib_file_save(TagLib_File *file);
 sub taglib_file_save( File $file # Typedef<TagLib_File>->||*
-                     ) is native(LIB) returns int32 is export { * }
+                     ) is native(&library) returns int32 is export { * }
 
 #-From /usr/include/taglib/tag_c.h:160
 #/*!
@@ -187,7 +194,7 @@ sub taglib_file_save( File $file # Typedef<TagLib_File>->||*
 # */
 #TAGLIB_C_EXPORT char *taglib_tag_title(const TagLib_Tag *tag);
 sub taglib_tag_title( Tag $tag # const Typedef<TagLib_Tag>->||*
-                     ) is native(LIB) returns Str is export { * }
+                     ) is native(&library) returns Str is export { * }
 
 #-From /usr/include/taglib/tag_c.h:168
 #/*!
@@ -198,7 +205,7 @@ sub taglib_tag_title( Tag $tag # const Typedef<TagLib_Tag>->||*
 # */
 #TAGLIB_C_EXPORT char *taglib_tag_artist(const TagLib_Tag *tag);
 sub taglib_tag_artist( Tag $tag # const Typedef<TagLib_Tag>->||*
-                      ) is native(LIB) returns Str is export { * }
+                      ) is native(&library) returns Str is export { * }
 
 #-From /usr/include/taglib/tag_c.h:176
 #/*!
@@ -209,7 +216,7 @@ sub taglib_tag_artist( Tag $tag # const Typedef<TagLib_Tag>->||*
 # */
 #TAGLIB_C_EXPORT char *taglib_tag_album(const TagLib_Tag *tag);
 sub taglib_tag_album( Tag $tag # const Typedef<TagLib_Tag>->||*
-                     ) is native(LIB) returns Str is export { * }
+                     ) is native(&library) returns Str is export { * }
 
 #-From /usr/include/taglib/tag_c.h:184
 #/*!
@@ -220,7 +227,7 @@ sub taglib_tag_album( Tag $tag # const Typedef<TagLib_Tag>->||*
 # */
 #TAGLIB_C_EXPORT char *taglib_tag_comment(const TagLib_Tag *tag);
 sub taglib_tag_comment( Tag $tag # const Typedef<TagLib_Tag>->||*
-                       ) is native(LIB) returns Str is export { * }
+                       ) is native(&library) returns Str is export { * }
 
 #-From /usr/include/taglib/tag_c.h:192
 #/*!
@@ -231,7 +238,7 @@ sub taglib_tag_comment( Tag $tag # const Typedef<TagLib_Tag>->||*
 # */
 #TAGLIB_C_EXPORT char *taglib_tag_genre(const TagLib_Tag *tag);
 sub taglib_tag_genre( Tag $tag # const Typedef<TagLib_Tag>->||*
-                     ) is native(LIB) returns Str is export { * }
+                     ) is native(&library) returns Str is export { * }
 
 #-From /usr/include/taglib/tag_c.h:197
 #/*!
@@ -239,7 +246,7 @@ sub taglib_tag_genre( Tag $tag # const Typedef<TagLib_Tag>->||*
 # */
 #TAGLIB_C_EXPORT unsigned int taglib_tag_year(const TagLib_Tag *tag);
 sub taglib_tag_year( Tag $tag # const Typedef<TagLib_Tag>->||*
-                    ) is native(LIB) returns uint32 is export { * }
+                    ) is native(&library) returns uint32 is export { * }
 
 #-From /usr/include/taglib/tag_c.h:202
 #/*!
@@ -247,7 +254,7 @@ sub taglib_tag_year( Tag $tag # const Typedef<TagLib_Tag>->||*
 # */
 #TAGLIB_C_EXPORT unsigned int taglib_tag_track(const TagLib_Tag *tag);
 sub taglib_tag_track( Tag $tag # const Typedef<TagLib_Tag>->||*
-                     ) is native(LIB) returns uint32 is export { * }
+                     ) is native(&library) returns uint32 is export { * }
 
 #-From /usr/include/taglib/tag_c.h:209
 #/*!
@@ -258,7 +265,7 @@ sub taglib_tag_track( Tag $tag # const Typedef<TagLib_Tag>->||*
 #TAGLIB_C_EXPORT void taglib_tag_set_title(TagLib_Tag *tag, const char *title);
 sub taglib_tag_set_title(                              Tag $tag # Typedef<TagLib_Tag>->||*
                         ,Str                           $title # const char*
-                         ) is native(LIB)  is export { * }
+                         ) is native(&library)  is export { * }
 
 #-From /usr/include/taglib/tag_c.h:216
 #/*!
@@ -269,7 +276,7 @@ sub taglib_tag_set_title(                              Tag $tag # Typedef<TagLib
 #TAGLIB_C_EXPORT void taglib_tag_set_artist(TagLib_Tag *tag, const char *artist);
 sub taglib_tag_set_artist(                              Tag $tag # Typedef<TagLib_Tag>->||*
                          ,Str                           $artist # const char*
-                          ) is native(LIB)  is export { * }
+                          ) is native(&library)  is export { * }
 
 #-From /usr/include/taglib/tag_c.h:223
 #/*!
@@ -280,7 +287,7 @@ sub taglib_tag_set_artist(                              Tag $tag # Typedef<TagLi
 #TAGLIB_C_EXPORT void taglib_tag_set_album(TagLib_Tag *tag, const char *album);
 sub taglib_tag_set_album(                              Tag $tag # Typedef<TagLib_Tag>->||*
                         ,Str                           $album # const char*
-                         ) is native(LIB)  is export { * }
+                         ) is native(&library)  is export { * }
 
 #-From /usr/include/taglib/tag_c.h:230
 #/*!
@@ -291,7 +298,7 @@ sub taglib_tag_set_album(                              Tag $tag # Typedef<TagLib
 #TAGLIB_C_EXPORT void taglib_tag_set_comment(TagLib_Tag *tag, const char *comment);
 sub taglib_tag_set_comment(                              Tag $tag # Typedef<TagLib_Tag>->||*
                           ,Str                           $comment # const char*
-                           ) is native(LIB)  is export { * }
+                           ) is native(&library)  is export { * }
 
 #-From /usr/include/taglib/tag_c.h:237
 #/*!
@@ -302,7 +309,7 @@ sub taglib_tag_set_comment(                              Tag $tag # Typedef<TagL
 #TAGLIB_C_EXPORT void taglib_tag_set_genre(TagLib_Tag *tag, const char *genre);
 sub taglib_tag_set_genre(                              Tag $tag # Typedef<TagLib_Tag>->||*
                         ,Str                           $genre # const char*
-                         ) is native(LIB)  is export { * }
+                         ) is native(&library)  is export { * }
 
 #-From /usr/include/taglib/tag_c.h:242
 #/*!
@@ -311,7 +318,7 @@ sub taglib_tag_set_genre(                              Tag $tag # Typedef<TagLib
 #TAGLIB_C_EXPORT void taglib_tag_set_year(TagLib_Tag *tag, unsigned int year);
 sub taglib_tag_set_year(                              Tag $tag # Typedef<TagLib_Tag>->||*
                        ,uint32                        $year # unsigned int
-                        ) is native(LIB)  is export { * }
+                        ) is native(&library)  is export { * }
 
 #-From /usr/include/taglib/tag_c.h:247
 #/*!
@@ -320,7 +327,7 @@ sub taglib_tag_set_year(                              Tag $tag # Typedef<TagLib_
 #TAGLIB_C_EXPORT void taglib_tag_set_track(TagLib_Tag *tag, unsigned int track);
 sub taglib_tag_set_track(                              Tag $tag # Typedef<TagLib_Tag>->||*
                         ,uint32                        $track # unsigned int
-                         ) is native(LIB)  is export { * }
+                         ) is native(&library)  is export { * }
 
 #-From /usr/include/taglib/tag_c.h:252
 #/*!
@@ -328,7 +335,7 @@ sub taglib_tag_set_track(                              Tag $tag # Typedef<TagLib
 # */
 #TAGLIB_C_EXPORT void taglib_tag_free_strings(void);
 sub taglib_tag_free_strings(
-                            ) is native(LIB)  is export { * }
+                            ) is native(&library)  is export { * }
 
 #-From /usr/include/taglib/tag_c.h:261
 #/*!
@@ -336,7 +343,7 @@ sub taglib_tag_free_strings(
 # */
 #TAGLIB_C_EXPORT int taglib_audioproperties_length(const TagLib_AudioProperties *audioProperties);
 sub taglib_audioproperties_length( AudioProperties $audioProperties # const Typedef<TagLib_AudioProperties>->||*
-                                  ) is native(LIB) returns int32 is export { * }
+                                  ) is native(&library) returns int32 is export { * }
 
 #-From /usr/include/taglib/tag_c.h:266
 #/*!
@@ -344,7 +351,7 @@ sub taglib_audioproperties_length( AudioProperties $audioProperties # const Type
 # */
 #TAGLIB_C_EXPORT int taglib_audioproperties_bitrate(const TagLib_AudioProperties *audioProperties);
 sub taglib_audioproperties_bitrate( AudioProperties $audioProperties # const Typedef<TagLib_AudioProperties>->||*
-                                   ) is native(LIB) returns int32 is export { * }
+                                   ) is native(&library) returns int32 is export { * }
 
 #-From /usr/include/taglib/tag_c.h:271
 #/*!
@@ -352,7 +359,7 @@ sub taglib_audioproperties_bitrate( AudioProperties $audioProperties # const Typ
 # */
 #TAGLIB_C_EXPORT int taglib_audioproperties_samplerate(const TagLib_AudioProperties *audioProperties);
 sub taglib_audioproperties_samplerate( AudioProperties $audioProperties # const Typedef<TagLib_AudioProperties>->||*
-                                      ) is native(LIB) returns int32 is export { * }
+                                      ) is native(&library) returns int32 is export { * }
 
 #-From /usr/include/taglib/tag_c.h:276
 #/*!
@@ -360,9 +367,9 @@ sub taglib_audioproperties_samplerate( AudioProperties $audioProperties # const 
 # */
 #TAGLIB_C_EXPORT int taglib_audioproperties_channels(const TagLib_AudioProperties *audioProperties);
 sub taglib_audioproperties_channels( AudioProperties $audioProperties # const Typedef<TagLib_AudioProperties>->||*
-                                    ) is native(LIB) returns int32 is export { * }
+                                    ) is native(&library) returns int32 is export { * }
 
 #-From /usr/include/taglib/tag_c.h:293
 #TAGLIB_C_EXPORT void taglib_id3v2_set_default_text_encoding(TagLib_ID3v2_Encoding encoding);
 sub taglib_id3v2_set_default_text_encoding(int32 $encoding # Typedef<TagLib_ID3v2_Encoding>->|TagLib_ID3v2_Encoding|
-                                           ) is native(LIB)  is export { * }
+                                           ) is native(&library)  is export { * }

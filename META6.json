@@ -5,7 +5,9 @@
   "auth": "github:the-eater",
   "description": "TagLib C bindings in Perl6",
   "license": "Artistic-2.0",
-  "depends": [],
+  "depends": [
+    "LibraryCheck"
+  ],
   "provides": {
     "TagLibC": "lib/TagLibC.pm6",
     "TagLibC::Wrapper": "lib/TagLibC/Wrapper.pm6"
