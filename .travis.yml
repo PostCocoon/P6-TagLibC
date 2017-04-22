@@ -1,0 +1,15 @@
+language: perl6
+
+perl6:
+  - nom
+  - latest
+
+os:
+  - osx
+  - linux
+
+install:
+  - rakudobrew build zef
+  - zef install .
+
+script: prove -v -e "perl6 -Ilib" t/
