@@ -4,9 +4,18 @@ perl6:
   - nom
   - latest
 
+cache:
+  directories:
+    - $HOME/.rakudobrew
+
 os:
   - osx
   - linux
+
+before_install:
+  - PKG=apt;
+  - if [ "$TRAVIS_OS_NAME" = "osx" ];  then PKG=brew; fi;
+  - $PKG install taglib
 
 install:
   - rakudobrew build zef
