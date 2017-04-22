@@ -9,7 +9,7 @@ os:
   - linux
 
 before_install:
-  - PKG=apt-get;
+  - PKG="sudo apt-get";
   - if [ "$TRAVIS_OS_NAME" = "osx" ];  then PKG=brew; fi;
   - $PKG install taglib
 
