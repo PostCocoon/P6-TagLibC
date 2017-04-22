@@ -1,3 +1,25 @@
 {
-  "name": "TagLibC"
+  "perl": "6",
+  "name": "TagLibC",
+  "version": "1.0",
+  "auth": "github:the-eater",
+  "description": "TagLib C bindings in Perl6",
+  "license": "Artistic-2.0",
+  "depends": [],
+  "provides": {
+    "TagLibC": "lib/TagLibC.pm6",
+    "TagLibC::Wrapper": "lib/TagLibC/Wrapper.pm6"
+  },
+  "authors": [
+    "eater <perl6@eaterofco.de>"
+  ],
+  "tags": [
+    "taglib",
+    "music",
+    "tagging"
+  ],
+  "test-depends": [
+    "Test::META"
+  ],
+  "source-url": "https://github.com/the-eater/P6-TagLibC.git"
 }
