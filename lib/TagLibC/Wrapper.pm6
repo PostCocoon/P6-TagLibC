@@ -11,6 +11,11 @@ class TagLibC::Wrapper {
 
   method new(Str $path) {
     my $obj = self.bless;
+
+    if ! IO::Path.new($path).f {
+      die "File doesn't exist: $path";
+    }
+
     $obj.file-pointer = taglib_file_new($path);
     $obj.tag-pointer = taglib_file_tag($obj.file-pointer);
     $obj.audio-properties-pointer = taglib_file_audioproperties($obj.file-pointer);
@@ -51,12 +56,12 @@ class TagLibC::Wrapper {
   }
 
   method validate {
-    if ! taglib_file_is_valid $.file-pointer {
-      die "File pointer isn't vaild";
-    }
-
     if $.is-destroyed {
       die "Wrapper is destroyed and can't be used anymore";
+    }
+
+    if ! taglib_file_is_valid $.file-pointer {
+      die "File pointer isn't vaild";
     }
   }
 
