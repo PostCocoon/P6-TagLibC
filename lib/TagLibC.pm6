@@ -1,9 +1,28 @@
 use v6;
 use NativeCall;
 
-constant LIB = "libtag_c.so";
-
 unit module TagLibC;
+
+sub library is export {
+    # Environment variable overrides auto-detection
+    return %*ENV<PERL6_TAGLIB_C_LIB> if %*ENV<PERL6_TAGLIB_C_LIB>;
+
+    # On MacOS X using homebrew
+    return "libtag_c.dylib" if $*KERNEL.name eq 'darwin';
+
+    # Linux/UNIX
+    constant LIB = 'tag_c';
+    if library-exists(LIB, v0) {
+        return sprintf("lib%s.so.5", LIB);
+    } elsif library-exists(LIB, v1) {
+        return sprintf("lib%s.so.6", LIB);
+    }
+
+    # Fallback
+    return sprintf("lib%s.so", LIB);
+}
+
+constant LIB = library;
 
 ## Enumerations
 

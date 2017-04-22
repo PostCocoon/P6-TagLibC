@@ -4,10 +4,6 @@ perl6:
   - nom
   - latest
 
-cache:
-  directories:
-    - $HOME/.rakudobrew
-
 os:
   - osx
   - linux
