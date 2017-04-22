@@ -120,7 +120,11 @@ class TagLibC::Wrapper {
     taglib_tag_year($.tag-pointer);
   }
 
-  multi method year(Str $year) {
+  multi method year($year) {
+    self.year($year.Int);
+  }
+
+  multi method year(Int $year) {
     self.validate;
     taglib_tag_set_year($.tag-pointer, $year);
   }
@@ -130,7 +134,11 @@ class TagLibC::Wrapper {
     taglib_tag_track($.tag-pointer);
   }
 
-  multi method track(Str $track) {
+  multi method track($track) {
+    self.track($track.Int);
+  }
+
+  multi method track(Int $track) {
     self.validate;
     taglib_tag_set_track($.tag-pointer, $track);
   }
