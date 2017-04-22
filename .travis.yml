@@ -15,6 +15,6 @@ before_install:
 
 install:
   - rakudobrew build zef
-  - zef install .
+  - zef install --depsonly .
 
 script: prove -v -e "perl6 -Ilib" t/
