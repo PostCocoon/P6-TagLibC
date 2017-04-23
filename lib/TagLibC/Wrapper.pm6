@@ -25,7 +25,7 @@ class TagLibC::Wrapper {
   #| Creates a new TagLibC::Wrapper object from file given.
   #|
   #| Throws when file doesn't exist
-  method new(Str $path) {
+  method new(Str $path --> TagLibC::Wrapper) {
     my $obj = self.bless;
 
     if ! IO::Path.new($path).f {
@@ -55,9 +55,8 @@ class TagLibC::Wrapper {
   #|        year => 2014
   #|     }
   #|
-  method get-hash
+  method get-hash (--> Hash)
   {
-
     return {
       artist => self.artist,
       genre  => self.genre,
@@ -75,27 +74,27 @@ class TagLibC::Wrapper {
   }
 
   #| Get length from this file in seconds
-  method length {
+  method length (--> Int) {
     taglib_audioproperties_length(self.audio-properties-pointer);
   }
 
   #| Get bitrate from this file
-  method bitrate {
+  method bitrate (--> Int) {
     taglib_audioproperties_bitrate(self.audio-properties-pointer);
   }
 
   #| Get amount of channels from this file
-  method channels {
+  method channels (--> Int) {
     taglib_audioproperties_channels(self.audio-properties-pointer);
   }
 
   #| Get the samplerate from this file
-  method samplerate {
+  method samplerate (--> Int) {
     taglib_audioproperties_samplerate(self.audio-properties-pointer);
   }
 
   #| Validate the current file, throws if it's destroyed or not valid
-  method validate {
+  method validate () {
     if $.is-destroyed {
       X::AdHoc.new(payload => "Wrapper is destroyed and can't be used anymore").throw;
     }
@@ -106,7 +105,7 @@ class TagLibC::Wrapper {
   }
 
   #| Get the artist
-  multi method artist {
+  multi method artist (--> Str) {
     self.validate;
     taglib_tag_artist($.tag-pointer);
   }
@@ -118,7 +117,7 @@ class TagLibC::Wrapper {
   }
 
   #| Get the title
-  multi method title {
+  multi method title (--> Str) {
     self.validate;
     taglib_tag_title($.tag-pointer);
   }
@@ -130,7 +129,7 @@ class TagLibC::Wrapper {
   }
 
   #| Get the album
-  multi method album {
+  multi method album (--> Str) {
     self.validate;
     taglib_tag_album($.tag-pointer);
   }
@@ -142,7 +141,7 @@ class TagLibC::Wrapper {
   }
 
   #| Get the comment
-  multi method comment {
+  multi method comment (--> Str) {
     self.validate;
     taglib_tag_comment($.tag-pointer);
   }
@@ -154,7 +153,7 @@ class TagLibC::Wrapper {
   }
 
   #| Get the genre
-  multi method genre {
+  multi method genre (--> Str) {
     self.validate;
     taglib_tag_genre($.tag-pointer);
   }
@@ -166,7 +165,7 @@ class TagLibC::Wrapper {
   }
 
   #| Get the year
-  multi method year {
+  multi method year (--> Int) {
     self.validate;
     taglib_tag_year($.tag-pointer);
   }
@@ -183,7 +182,7 @@ class TagLibC::Wrapper {
   }
 
   #| Get the track
-  multi method track {
+  multi method track(--> Int) {
     self.validate;
     taglib_tag_track($.tag-pointer);
   }
@@ -200,13 +199,13 @@ class TagLibC::Wrapper {
   }
 
   #| Free all memory and destroy this object
-  method destroy {
+  method destroy () {
     $.is-destroyed = True;
     taglib_file_free($.file-pointer);
   }
 
   #| Write all changes to the filesystem
-  method save {
+  method save () {
     taglib_file_save($.file-pointer);
   }
 }

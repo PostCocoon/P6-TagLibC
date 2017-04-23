@@ -25,7 +25,7 @@ An easy wrapper object for taglib_c
 ```
 method new(
     Str $path
-) returns Mu
+) returns TagLibC::Wrapper
 ```
 
 Creates a new TagLibC::Wrapper object from file given. Throws when file doesn't exist
@@ -33,7 +33,7 @@ Creates a new TagLibC::Wrapper object from file given. Throws when file doesn't 
 ### method get-hash
 
 ```
-method get-hash() returns Mu
+method get-hash() returns Hash
 ```
 
 Gets a hash with all available info e.g. { album => "Edited & Forgotten", artist => "Sinister Souls", genre => "", info => { bitrate => 270, channels => 2, length => 311, samplerate => 44100 }, title => "3D", track => 3, year => 2014 }
@@ -41,7 +41,7 @@ Gets a hash with all available info e.g. { album => "Edited & Forgotten", artist
 ### method length
 
 ```
-method length() returns Mu
+method length() returns Int
 ```
 
 Get length from this file in seconds
@@ -49,7 +49,7 @@ Get length from this file in seconds
 ### method bitrate
 
 ```
-method bitrate() returns Mu
+method bitrate() returns Int
 ```
 
 Get bitrate from this file
@@ -57,7 +57,7 @@ Get bitrate from this file
 ### method channels
 
 ```
-method channels() returns Mu
+method channels() returns Int
 ```
 
 Get amount of channels from this file
@@ -65,7 +65,7 @@ Get amount of channels from this file
 ### method samplerate
 
 ```
-method samplerate() returns Mu
+method samplerate() returns Int
 ```
 
 Get the samplerate from this file
@@ -81,7 +81,7 @@ Validate the current file, throws if it's destroyed or not valid
 ### method artist
 
 ```
-method artist() returns Mu
+method artist() returns Str
 ```
 
 Get the artist
@@ -99,7 +99,7 @@ Set the artist
 ### method title
 
 ```
-method title() returns Mu
+method title() returns Str
 ```
 
 Get the title
@@ -117,7 +117,7 @@ Set the title
 ### method album
 
 ```
-method album() returns Mu
+method album() returns Str
 ```
 
 Get the album
@@ -135,7 +135,7 @@ Set the album
 ### method comment
 
 ```
-method comment() returns Mu
+method comment() returns Str
 ```
 
 Get the comment
@@ -153,7 +153,7 @@ Set the comment
 ### method genre
 
 ```
-method genre() returns Mu
+method genre() returns Str
 ```
 
 Get the genre
@@ -171,7 +171,7 @@ Set the genre
 ### method year
 
 ```
-method year() returns Mu
+method year() returns Int
 ```
 
 Get the year
@@ -199,7 +199,7 @@ Set the year
 ### method track
 
 ```
-method track() returns Mu
+method track() returns Int
 ```
 
 Get the track
